@@ -31,19 +31,20 @@
 						exports: 'Backbone'
 					},
 					underscore: {
+						deps: ['jquery'],
 						exports: '_'
 					}
 				}
 			});
 
-			require(['bootstrap'], function($) {});
+			require(['bootstrap']);
 		</script>
 	</head>
 	<body>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="#">priceofmilk.us</a>
+					<a class="navbar-brand" href="/">priceofmilk.us</a>
 				</div>
 			</div>
 		</nav>
@@ -57,25 +58,15 @@
 		</div>
 
 		<div class="container">
-      <!-- Example row of columns -->
 			<div class="row">
 				<div class="col-md-4" id="widg-current-price"></div>
 
 				<script>
 					require(
-						['jquery', 'underscore', 'backbone', 'handlebars', 'collections/months', 'data/milk-prices'],
-						function($, _, Backbone, Handlebars, Months, Data) {
+						['collections/months', 'views/current_price', 'data/milk-prices'],
+						function(Months, CurrentPrice, Data) {
 
 							var months = new Months(Data);
-
-							var CurrentPrice = Backbone.View.extend({
-								render: function() {
-									var source = $("#tpl-current-price").html(),
-										template = Handlebars.compile(source);
-
-									this.$el.html(template(this.collection.at(0).attributes));
-								}
-							});
 
 							var current_price = new CurrentPrice({
 								el: $("#widg-current-price"),
@@ -89,76 +80,14 @@
 
 				<div class="col-md-8" id="widg-price-over-time">
 					<h2>Price Over Time</h2>
-					<div id="hc-price-over-time" style="width:100%; height:400px;"></div>
+					<div id="hc-price-over-time" style="width:100%; height:300px;"></div>
 				</div>
 
 				<script>
 					require(
-						['jquery', 'underscore', 'backbone', 'handlebars', 'highcharts', 'collections/months', 'data/milk-prices'],
-						function($, _, Backbone, Handlebars, Highcharts, Months, Data) {
+						['collections/months', 'views/price_over_time', 'data/milk-prices'],
+						function(Months, PriceOverTime, Data) {
 							var months = new Months(Data);
-
-							var PriceOverTime = Backbone.View.extend({
-								render: function() {
-									var //source = $("#tpl-price-over-time").html(),
-										//template = Handlebars.compile(source),
-										data = this.buildData();
-
-									this.$("#hc-price-over-time").highcharts({
-										chart: {
-											type: 'line'
-										},
-										title: {
-											text: 'Average National Price of Milk Over Time'
-										},
-										xAxis: {
-											type: 'datetime',
-										},
-										yAxis: {
-											title: {
-												text: 'Dollars ($)'
-											}
-										},
-										plotOptions: {
-											area: {
-												fillColor: {
-													linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
-													stops: [
-														[0, Highcharts.getOptions().colors[0]],
-														[1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
-													]
-												},
-												marker: {
-													radius: 2
-												},
-												lineWidth: 1,
-												states: {
-													hover: {
-														lineWidth: 1
-													}
-												},
-												threshold: null
-											}
-										},
-										series: [{
-											type: 'area',
-											name: 'Average Price of Milk',
-											'data': data
-										}]
-									});
-									// this.$el.html(template(this.collection.at(0).attributes));
-								},
-
-								buildData: function() {
-									var data = [];
-
-									this.collection.each(function(model) {
-										data.push([Date.UTC(model.get('year'), model.get('month_num')), model.get('value')]);
-									});
-
-									return data;
-								}
-							});
 
 							var price_over_time = new PriceOverTime({
 								el: $("#widg-price-over-time"),
@@ -171,27 +100,24 @@
 				</script>
 			</div>
 
-			<hr>
+			<hr />
+
+			<p class="text-center">
+				Milk pricing information provided by the <a href="http://data.bls.gov/home.htm" target="_blank">Bureau of Labor Statistics</a>, part of the <a href="http://www.dol.gov/" target="_blank">United States Department of Labor</a>, through their public <a href="http://www.bls.gov/developers/" target="_blank">API</a>.
+			</p>
+
+			<hr />
 
 			<footer>
-				<p>&copy; 2015</p>
+				<p>&copy; Jarret Byrne, 2015</p>
 			</footer>
 		</div>
 
 		<script id="tpl-current-price" type="text/x-handlebars-template">
 			<h2>Latest Average Price</h2>
-			<p>The average price for milk in {{periodName}} of {{year}} was <strong>${{value}}</strong>!</p>
+			<h1 style="font-size: 120px;">${{value}}</h1>
+			<p>The price above is the national average of reported milk prices during the month of {{periodName}} {{year}}.</p>
 		</script>
 
-		<script id="tpl-price-over-time" type="text/x-handlebars-template">
-			<h2>Price Over Time</h2>
-			<p>The average price for milk in {{periodName}} of {{year}} was <strong>${{value}}</strong>!</p>
-		</script>
-
-		<script>
-			require(['highcharts', 'data/milk-prices'], function(HC, prices) {
-				// console.log(prices);
-			});
-		</script>
 	</body>
 </html>
