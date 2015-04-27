@@ -60,7 +60,7 @@ define(
 
 			buildData: function() {
 				var data = [];
-console.log(this.collection);
+
 				this.collection.each(function(model) {
 					data.push([Date.UTC(model.get('year'), model.get('month_num')), model.get('value')]);
 				});

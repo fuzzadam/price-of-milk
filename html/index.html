@@ -110,7 +110,6 @@
 				<span class="glyphicon glyphicon-info-sign"></span>
 				Milk pricing information provided by the <a href="http://data.bls.gov/home.htm" target="_blank">Bureau of Labor Statistics</a>, part of the <a href="http://www.dol.gov/" target="_blank">United States Department of Labor</a>, through their public <a href="http://www.bls.gov/developers/" target="_blank">API</a>.
 			</p>
-
 			<hr />
 
 			<footer>
@@ -130,6 +129,12 @@
 			<h2>Latest Average Price</h2>
 			<h1 style="font-size: 120px;">${{value}}</h1>
 			<p>The price above is the national average of reported milk prices during the month of {{periodName}} {{year}}.</p>
+		</script>
+
+		<script>
+			require(["app/google-analytics"], function(Google) {
+				Google();
+			});
 		</script>
 
 	</body>
