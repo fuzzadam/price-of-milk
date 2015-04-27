@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Price of Milk</title>
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<script src="js/lib/require.min.js"></script>
+		<script>
+			requirejs.config({
+				baseUrl: 'js',
+				paths: {
+					jquery: 'lib/jquery.min',
+					bootstrap: 'lib/bootstrap.min',
+					highcharts: 'lib/highcharts',
+					handlebars: 'lib/handlebars',
+					underscore: 'lib/underscore.min',
+					backbone: 'lib/backbone.min'
+				},
+				shim: {
+					bootstrap: {
+						deps: ['jquery']
+					},
+					highcharts: {
+						deps: ['jquery'],
+						exports: 'Highcharts'
+					},
+					backbone: {
+						deps: ['jquery', 'underscore'],
+						exports: 'Backbone'
+					},
+					underscore: {
+						exports: '_'
+					}
+				}
+			});
+
+			require(['bootstrap'], function($) {});
+		</script>
+	</head>
+	<body>
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="#">priceofmilk.us</a>
+				</div>
+			</div>
+		</nav>
+
+		<div class="jumbotron">
+			<div class="container">
+				<h1>Stay Connected!</h1>
+				<p>Keeping in touch with the common, hardworking American is tough for a politician on the campain trail nowadays, we know. But never fear! Priceofmilk.us is here to keep you up-to-date with the goings-on with the price of, well, milk! Never be stumped while delivering your stump speech again!</p>
+				<!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p> -->
+			</div>
+		</div>
+
+		<div class="container">
+      <!-- Example row of columns -->
+			<div class="row">
+				<div class="col-md-4" id="widg-current-price"></div>
+
+				<script>
+					require(
+						['jquery', 'underscore', 'backbone', 'handlebars', 'collections/months', 'data/milk-prices'],
+						function($, _, Backbone, Handlebars, Months, Data) {
+
+							var months = new Months(Data);
+
+							var CurrentPrice = Backbone.View.extend({
+								render: function() {
+									var source = $("#tpl-current-price").html(),
+										template = Handlebars.compile(source);
+
+									this.$el.html(template(this.collection.at(0).attributes));
+								}
+							});
+
+							var current_price = new CurrentPrice({
+								el: $("#widg-current-price"),
+								collection: months
+							});
+
+							current_price.render();
+						}
+					);
+				</script>
+
+				<div class="col-md-8" id="widg-price-over-time">
+					<h2>Price Over Time</h2>
+					<div id="hc-price-over-time" style="width:100%; height:400px;"></div>
+				</div>
+
+				<script>
+					require(
+						['jquery', 'underscore', 'backbone', 'handlebars', 'highcharts', 'collections/months', 'data/milk-prices'],
+						function($, _, Backbone, Handlebars, Highcharts, Months, Data) {
+							var months = new Months(Data);
+
+							var PriceOverTime = Backbone.View.extend({
+								render: function() {
+									var //source = $("#tpl-price-over-time").html(),
+										//template = Handlebars.compile(source),
+										data = this.buildData();
+
+									this.$("#hc-price-over-time").highcharts({
+										chart: {
+											type: 'line'
+										},
+										title: {
+											text: 'Average National Price of Milk Over Time'
+										},
+										xAxis: {
+											type: 'datetime',
+										},
+										yAxis: {
+											title: {
+												text: 'Dollars ($)'
+											}
+										},
+										plotOptions: {
+											area: {
+												fillColor: {
+													linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+													stops: [
+														[0, Highcharts.getOptions().colors[0]],
+														[1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+													]
+												},
+												marker: {
+													radius: 2
+												},
+												lineWidth: 1,
+												states: {
+													hover: {
+														lineWidth: 1
+													}
+												},
+												threshold: null
+											}
+										},
+										series: [{
+											type: 'area',
+											name: 'Average Price of Milk',
+											'data': data
+										}]
+									});
+									// this.$el.html(template(this.collection.at(0).attributes));
+								},
+
+								buildData: function() {
+									var data = [];
+
+									this.collection.each(function(model) {
+										data.push([Date.UTC(model.get('year'), model.get('month_num')), model.get('value')]);
+									});
+
+									return data;
+								}
+							});
+
+							var price_over_time = new PriceOverTime({
+								el: $("#widg-price-over-time"),
+								collection: months
+							});
+
+							price_over_time.render();
+						}
+					);
+				</script>
+			</div>
+
+			<hr>
+
+			<footer>
+				<p>&copy; 2015</p>
+			</footer>
+		</div>
+
+		<script id="tpl-current-price" type="text/x-handlebars-template">
+			<h2>Latest Average Price</h2>
+			<p>The average price for milk in {{periodName}} of {{year}} was <strong>${{value}}</strong>!</p>
+		</script>
+
+		<script id="tpl-price-over-time" type="text/x-handlebars-template">
+			<h2>Price Over Time</h2>
+			<p>The average price for milk in {{periodName}} of {{year}} was <strong>${{value}}</strong>!</p>
+		</script>
+
+		<script>
+			require(['highcharts', 'data/milk-prices'], function(HC, prices) {
+				// console.log(prices);
+			});
+		</script>
+	</body>
+</html>
