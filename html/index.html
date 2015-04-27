@@ -6,6 +6,7 @@
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Price of Milk</title>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/octicons.css" rel="stylesheet">
 		<script src="js/lib/require.min.js"></script>
 		<script>
 			requirejs.config({
@@ -44,7 +45,10 @@
 		<nav class="navbar navbar-inverse navbar-fixed-top">
 			<div class="container">
 				<div class="navbar-header">
-					<a class="navbar-brand" href="/">priceofmilk.us</a>
+					<a class="navbar-brand" href="/">
+						<span class="octicon octicon-beer"></span>
+						priceofmilk.us
+					</a>
 				</div>
 			</div>
 		</nav>
@@ -103,13 +107,22 @@
 			<hr />
 
 			<p class="text-center">
+				<span class="glyphicon glyphicon-info-sign"></span>
 				Milk pricing information provided by the <a href="http://data.bls.gov/home.htm" target="_blank">Bureau of Labor Statistics</a>, part of the <a href="http://www.dol.gov/" target="_blank">United States Department of Labor</a>, through their public <a href="http://www.bls.gov/developers/" target="_blank">API</a>.
 			</p>
 
 			<hr />
 
 			<footer>
-				<p>&copy; Jarret Byrne, 2015</p>
+				<p class="pull-right">&copy; <a href="http://jarretbyrne.com" target="_blank">Jarret Byrne</a>, 2015</p>
+				<p>
+					<a href="https://github.com/xjstratedgebx/price-of-milk" target="_blank">
+						<span class="octicon octicon-mark-github"></span> Price of Milk
+					</a>
+					is an open source project on Github.
+					Feel free to
+					<span class="octicon octicon-repo-forked"></span>
+				</p>
 			</footer>
 		</div>
 
