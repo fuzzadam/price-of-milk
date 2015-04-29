@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<meta charset="utf-8">
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 	    <meta name="viewport" content="width=device-width, initial-scale=1">
+	    <meta name="description" content="For the politican that feels out of touch: the latest average prices of milk, available 24/7!" />
 		<title>Price of Milk</title>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
 		<link href="css/octicons.css" rel="stylesheet">
@@ -15,6 +16,7 @@
 					jquery: 'lib/jquery.min',
 					bootstrap: 'lib/bootstrap.min',
 					highcharts: 'lib/highcharts',
+					highmaps: 'lib/map',
 					handlebars: 'lib/handlebars',
 					underscore: 'lib/underscore.min',
 					backbone: 'lib/backbone.min'
@@ -25,6 +27,10 @@
 					},
 					highcharts: {
 						deps: ['jquery'],
+						exports: 'Highcharts'
+					},
+					highmaps: {
+						deps: ['jquery', 'highcharts'],
 						exports: 'Highcharts'
 					},
 					backbone: {
@@ -56,8 +62,12 @@
 		<div class="jumbotron">
 			<div class="container">
 				<h1>Stay Connected!</h1>
-				<p>Keeping in touch with the common, hardworking American is tough for a politician on the campain trail nowadays, we know. But never fear! Priceofmilk.us is here to keep you up-to-date with the goings-on with the price of, well, milk! Never be stumped while delivering your stump speech again!</p>
-				<!-- <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p> -->
+				<p>
+					Keeping in touch with the common, hardworking American is tough for a politician on the campain trail nowadays, we know.
+					But never fear! Priceofmilk.us is here to keep you up-to-date with the goings-on with the price of, well, milk!
+					Common, hardworking Americans love milk!
+					Never be stumped by "gotcha" media-types over the price of this precious commodity while delivering your stump speech again!
+				</p>
 			</div>
 		</div>
 
@@ -65,52 +75,35 @@
 			<div class="row">
 				<div class="col-md-4" id="widg-current-price"></div>
 
-				<script>
-					require(
-						['collections/months', 'views/current_price', 'data/milk-prices'],
-						function(Months, CurrentPrice, Data) {
-
-							var months = new Months(Data);
-
-							var current_price = new CurrentPrice({
-								el: $("#widg-current-price"),
-								collection: months
-							});
-
-							current_price.render();
-						}
-					);
-				</script>
-
-				<div class="col-md-8" id="widg-price-over-time">
-					<h2>Price Over Time</h2>
-					<div id="hc-price-over-time" style="width:100%; height:300px;"></div>
+				<div class="col-md-8" id="widg-price-by-state">
+					<h2 class="widg-title">Price By State</h2>
+					<div class="hc-container"></div>
 				</div>
-
-				<script>
-					require(
-						['collections/months', 'views/price_over_time', 'data/milk-prices'],
-						function(Months, PriceOverTime, Data) {
-							var months = new Months(Data);
-
-							var price_over_time = new PriceOverTime({
-								el: $("#widg-price-over-time"),
-								collection: months
-							});
-
-							price_over_time.render();
-						}
-					);
-				</script>
 			</div>
 
+
 			<hr />
+
+
+			<div class="row">
+				<div class="col-md-12" id="widg-price-over-time">
+					<h2 class="widg-title">Price Over Time</h2>
+					<div class="hc-container"></div>
+				</div>
+			</div>
+					
+
+			<hr />
+
 
 			<p class="text-center">
 				<span class="glyphicon glyphicon-info-sign"></span>
-				Milk pricing information provided by the <a href="http://data.bls.gov/home.htm" target="_blank">Bureau of Labor Statistics</a>, part of the <a href="http://www.dol.gov/" target="_blank">United States Department of Labor</a>, through their public <a href="http://www.bls.gov/developers/" target="_blank">API</a>.
+				Milk pricing information is for 1 gallon (3.8 lit.) of fortified whole milk and is provided by the <a href="http://data.bls.gov/home.htm" target="_blank">Bureau of Labor Statistics</a>, part of the <a href="http://www.dol.gov/" target="_blank">United States Department of Labor</a>, through their public <a href="http://www.bls.gov/developers/" target="_blank">API</a>.
 			</p>
+
+
 			<hr />
+
 
 			<footer>
 				<p class="pull-right">&copy; <a href="http://jarretbyrne.com" target="_blank">Jarret Byrne</a>, 2015</p>
@@ -131,11 +124,82 @@
 			<p>The price above is the national average of reported milk prices during the month of {{periodName}} {{year}}.</p>
 		</script>
 
+
+		<!-- // BEGIN CURRENT-PRICE -->
+		<script>
+			require(
+				['collections/months', 'views/current_price', 'data/milk-prices'],
+				function(Months, CurrentPrice, Data) {
+
+					var months = new Months(Data);
+
+					var current_price = new CurrentPrice({
+						el: $("#widg-current-price"),
+						collection: months
+					});
+
+					current_price.render();
+				}
+			);
+		</script>
+		<!-- // END CURRENT-PRICE -->
+
+
+		<!-- // BEGIN PRICE-OVER-TIME CHART -->
+		<script>
+			require(
+				['collections/months', 'views/price-over-time', 'data/milk-prices'],
+				function(Months, PriceOverTime, Data) {
+					
+					//Build a collection of month-by-month pricing data
+					var months = new Months(Data);
+
+					//Only instantiate the module if we have the widget markup
+					if($("#widg-price-over-time").length) {
+						var price_over_time = new PriceOverTime({
+							el: $("#widg-price-over-time"),
+							collection: months
+						});
+
+						price_over_time.render();
+					}
+				}
+			);
+		</script>
+		<!-- // END PRICE-OVER-TIME CHART -->
+
+
+		<!-- // BEGIN PRICE-BY-STATE MAP -->
+		<script>
+			require(
+				['collections/states', 'views/price-by-state', 'data/us-map', 'data/state-milk-prices'],
+				function(States, PriceByState, HighchartsMapInfo, HighchartsMapData) {
+					
+					//Build a collection of state-by-state pricing data
+					var states = new States(HighchartsMapData);
+
+					//Only instantiate the module if we have the widget markup
+					if($("#widg-price-by-state").length) {
+						var price_by_state = new PriceByState({
+							el: $("#widg-price-by-state"),
+							collection: states
+						});
+
+						price_by_state.render();
+					}
+				}
+			);
+		</script>
+		<!-- // END PRICE-BY-STATE MAP -->
+
+
+		<!-- // BEGIN GOOGLE ANALYTICS -->
 		<script>
 			require(["app/google-analytics"], function(Google) {
 				Google();
 			});
 		</script>
+		<!-- // END GOOGLE ANALYTICS -->
 
 	</body>
 </html>

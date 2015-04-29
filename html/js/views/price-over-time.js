@@ -8,13 +8,13 @@ define(
 			render: function() {
 				var data = this.buildData();
 
-				this.$("#hc-price-over-time").highcharts({
+				this.$(".hc-container").highcharts({
 					chart: {
 						type: 'line',
 						zoomType: 'x'
 					},
 					title: {
-						text: 'Average National Price of Milk Over Time'
+						text: 'Average National Price of Milk Over Time ($)'
 					},
 					subtitle: {
 						text: document.ontouchstart === undefined ?
@@ -53,7 +53,10 @@ define(
 					series: [{
 						type: 'area',
 						name: 'Average Price of Milk',
-						'data': data
+						'data': data,
+						tooltip: {
+							valuePrefix: '$'
+						}
 					}]
 				});
 			},
