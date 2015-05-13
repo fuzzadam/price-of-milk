@@ -7,7 +7,14 @@
 	    <meta name="description" content="For the politican that feels out of touch: the latest average prices of milk, available 24/7!" />
 		<title>Price of Milk</title>
 		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<link href="css/pom.css" rel="stylesheet">
 		<link href="css/octicons.css" rel="stylesheet">
+
+		<!-- Google fonts -->
+		<link href='http://fonts.googleapis.com/css?family=Chango|Raleway:700,900,400,200|Sanchez' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+
+
 		<script src="js/lib/require.min.js"></script>
 		<script>
 			requirejs.config({
@@ -46,6 +53,7 @@
 
 			require(['bootstrap']);
 		</script>
+	
 	</head>
 	<body>
 		<nav class="navbar navbar-inverse navbar-fixed-top">
@@ -59,26 +67,35 @@
 			</div>
 		</nav>
 
-		<div class="jumbotron">
-			<div class="container">
-				<h1>Stay Connected!</h1>
-				<p>
-					Keeping in touch with the common, hardworking American is tough for a politician on the campain trail nowadays, we know.
-					But never fear! Priceofmilk.us is here to keep you up-to-date with the goings-on with the price of, well, milk!
-					Common, hardworking Americans love milk!
-					Never be stumped by "gotcha" media-types over the price of this precious commodity while delivering your stump speech again!
-				</p>
-			</div>
-		</div>
+		<br/>
 
-		<div class="container">
+
+		<div class="container" id="milk-intro">
 			<div class="row">
-				<div class="col-md-4" id="widg-current-price"></div>
-
-				<div class="col-md-8" id="widg-price-by-state">
-					<h2 class="widg-title">Price By State</h2>
-					<div class="hc-container"></div>
+				<div class="col-md-6">
+					<div id="widg-current-price">
+					</div>
 				</div>
+
+				<div class="col-md-6">
+
+
+					<h1 class="uhoh">Uh oh.</h1>
+					<h2>How much does milk cost again? <br/>I'm, uh, asking for a friend.</h2>
+
+					<hr/>
+					<p>
+						Keeping in touch with the common, hardworking American is tough for a politician on the campain trail nowadays, we know.
+						But never fear! Priceofmilk.us is here to keep you up-to-date with the goings-on with the price of, well, milk!
+						Common, hardworking Americans love milk!	
+						Never be stumped by "gotcha" media-types over the price of this precious commodity while delivering your stump speech again!
+					</p>
+
+
+					
+				</div>
+
+				
 			</div>
 
 
@@ -89,6 +106,13 @@
 				<div class="col-md-12" id="widg-price-over-time">
 					<h2 class="widg-title">Price Over Time</h2>
 					<div class="hc-container"></div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12" id="widg-price-by-state">
+						<h2 class="widg-title">Price By State</h2>
+						<div class="hc-container"></div>
 				</div>
 			</div>
 					
@@ -102,7 +126,7 @@
 			</p>
 
 
-			<hr />
+			<hr class="hr-title"/>
 
 
 			<footer>
@@ -119,9 +143,13 @@
 		</div>
 
 		<script id="tpl-current-price" type="text/x-handlebars-template">
-			<h2>Latest Average Price</h2>
-			<h1 style="font-size: 120px;">${{value}}</h1>
-			<p>The price above is the national average of reported milk prices during the month of {{periodName}} {{year}}.</p>
+			<div id="milkbottle">
+				<div id="milkbottle-label">
+					<h2>The latest average price:</h2>
+					<h1 class="milkbottle-price">${{value}}<span>/gal</span></h1>
+					<p class="milk-bottle-disclaim">*The price above is the national average of reported milk prices during the month of {{periodName}} {{year}}.</p>
+				</div>
+			</div>
 		</script>
 
 
